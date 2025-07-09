@@ -10,14 +10,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit } from "lucide-react"
-import type { Expense } from "../types/expense"
+import type { Expense, Wallet } from "../types/expense"
 import { mockCategories } from "../data/mock-data"
 import { formatCurrency } from "../data/currency-data"
-import type { Wallet } from "../types/wallet"
 
 interface ExpenseFormProps {
   expense?: Expense
-  wallets: Wallet[] // Add wallets prop
+  wallets: Wallet[]
   onSubmit: (expense: Omit<Expense, "id">) => void
   trigger?: React.ReactNode
 }

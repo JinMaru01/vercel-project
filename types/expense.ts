@@ -5,15 +5,15 @@ export interface Expense {
   wallet: string
   description: string
   date: Date
-  currency: string // Add currency field
+  currency: string
 }
 
 export interface Wallet {
   id: string
   name: string
   balance: number
-  currency: string // Add currency field
-  exchangeRate?: number // Optional exchange rate to USD for conversion
+  currency: string
+  exchangeRate?: number
 }
 
 export interface Category {
@@ -27,5 +27,5 @@ export interface Currency {
   code: string
   symbol: string
   name: string
-  exchangeRate: number // Rate to USD
+  exchangeRate: number
 }

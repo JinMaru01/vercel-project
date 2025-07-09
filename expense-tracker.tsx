@@ -117,6 +117,28 @@ export default function ExpenseTracker() {
     setExpenses((prev) => prev.filter((expense) => expense.id !== id))
   }
 
+  // Refresh functionality - simulate fetching fresh data
+  const handleRefreshExpenses = async () => {
+    // In a real app, this would fetch fresh data from an API
+    // For demo purposes, we'll just simulate a delay and potentially add a new expense
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Optionally add a simulated new expense to show the refresh worked
+    const shouldAddNewExpense = Math.random() > 0.7 // 30% chance
+    if (shouldAddNewExpense) {
+      const newExpense: Expense = {
+        id: `refresh_${Date.now()}`,
+        amount: Math.floor(Math.random() * 100) + 10,
+        category: "Food & Dining",
+        wallet: "Cash (Dollar)",
+        description: "Refreshed expense",
+        date: new Date(),
+        currency: "USD",
+      }
+      setExpenses((prev) => [newExpense, ...prev])
+    }
+  }
+
   // Wallet management functions
   const addWallet = (walletData: Omit<Wallet, "id">) => {
     const newWallet: Wallet = {
@@ -164,52 +186,72 @@ export default function ExpenseTracker() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Expense Tracker</h1>
-          <p className="text-muted-foreground">
-            Track and manage your expenses across different categories and wallets
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Mobile-optimized container with proper padding */}
+      <div className="container mx-auto px-4 py-4 sm:px-6 sm:py-6 space-y-4 sm:space-y-6">
+        {/* Header - Stack on mobile, side-by-side on larger screens */}
+        <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0">
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl font-bold">Expense Tracker</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1">
+              Track and manage your expenses across different categories and wallets
+            </p>
+          </div>
+          {/* Mobile-friendly button */}
+          <div className="flex justify-center sm:justify-end">
+            <ExpenseForm wallets={wallets} onSubmit={addExpense} />
+          </div>
         </div>
-        <ExpenseForm wallets={wallets} onSubmit={addExpense} />
+
+        {/* Mobile-optimized tabs */}
+        <Tabs defaultValue="dashboard" className="space-y-4 sm:space-y-6">
+          {/* Scrollable tabs on mobile */}
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-4 min-w-[320px]">
+              <TabsTrigger value="dashboard" className="text-xs sm:text-sm">
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="expenses" className="text-xs sm:text-sm">
+                Expenses
+              </TabsTrigger>
+              <TabsTrigger value="wallets" className="text-xs sm:text-sm">
+                Wallets
+              </TabsTrigger>
+              <TabsTrigger value="export" className="text-xs sm:text-sm">
+                Export
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="dashboard" className="space-y-4 sm:space-y-6">
+            <ExpenseDashboard expenses={expenses} />
+          </TabsContent>
+
+          <TabsContent value="expenses" className="space-y-4 sm:space-y-6">
+            <ExpenseList
+              expenses={expenses}
+              wallets={wallets}
+              onUpdateExpense={updateExpense}
+              onDeleteExpense={deleteExpense}
+              onRefresh={handleRefreshExpenses}
+            />
+          </TabsContent>
+
+          <TabsContent value="wallets" className="space-y-4 sm:space-y-6">
+            <WalletManager
+              wallets={wallets}
+              expenses={expenses}
+              onAddWallet={addWallet}
+              onUpdateWallet={updateWallet}
+              onDeleteWallet={deleteWallet}
+            />
+          </TabsContent>
+
+          <TabsContent value="export" className="space-y-4 sm:space-y-6">
+            <ExportSummary expenses={expenses} />
+          </TabsContent>
+        </Tabs>
       </div>
-
-      <Tabs defaultValue="dashboard" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="expenses">Expenses</TabsTrigger>
-          <TabsTrigger value="wallets">Wallets</TabsTrigger>
-          <TabsTrigger value="export">Export</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="dashboard" className="space-y-6">
-          <ExpenseDashboard expenses={expenses} />
-        </TabsContent>
-
-        <TabsContent value="expenses" className="space-y-6">
-          <ExpenseList
-            expenses={expenses}
-            wallets={wallets}
-            onUpdateExpense={updateExpense}
-            onDeleteExpense={deleteExpense}
-          />
-        </TabsContent>
-
-        <TabsContent value="wallets" className="space-y-6">
-          <WalletManager
-            wallets={wallets}
-            expenses={expenses}
-            onAddWallet={addWallet}
-            onUpdateWallet={updateWallet}
-            onDeleteWallet={deleteWallet}
-          />
-        </TabsContent>
-
-        <TabsContent value="export" className="space-y-6">
-          <ExportSummary expenses={expenses} />
-        </TabsContent>
-      </Tabs>
     </div>
   )
 }

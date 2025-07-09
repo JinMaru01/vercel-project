@@ -9,12 +9,12 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit } from "lucide-react"
-import type { WalletType } from "../types/expense"
+import type { Wallet } from "../types/expense"
 import { currencies, formatCurrency } from "../data/currency-data"
 
 interface WalletFormProps {
-  wallet?: WalletType
-  onSubmit: (wallet: Omit<WalletType, "id">) => void
+  wallet?: Wallet
+  onSubmit: (wallet: Omit<Wallet, "id">) => void
   trigger?: React.ReactNode
 }
 
@@ -72,10 +72,7 @@ export function WalletForm({ wallet, onSubmit, trigger }: WalletFormProps) {
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {/* Wallet icon is removed to avoid redeclaration */}
-            {wallet ? "Edit Wallet" : "Create New Wallet"}
-          </DialogTitle>
+          <DialogTitle className="flex items-center gap-2">{wallet ? "Edit Wallet" : "Create New Wallet"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

@@ -57,25 +57,26 @@ export function ExpenseDashboard({ expenses }: ExpenseDashboardProps) {
   }, [expenses])
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Mobile-optimized summary cards */}
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total (USD Equivalent)</CardTitle>
+            <CardTitle className="text-sm font-medium">Total (USD)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalInUSD, "USD")}</div>
-            <p className="text-xs text-muted-foreground">Across all currencies</p>
+            <div className="text-xl sm:text-2xl font-bold">{formatCurrency(totalInUSD, "USD")}</div>
+            <p className="text-xs text-muted-foreground">All currencies</p>
           </CardContent>
         </Card>
 
         {Object.entries(currencyTotals).map(([currency, total]) => (
           <Card key={currency}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total in {currency}</CardTitle>
+              <CardTitle className="text-sm font-medium">Total {currency}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatCurrency(total, currency)}</div>
+              <div className="text-xl sm:text-2xl font-bold">{formatCurrency(total, currency)}</div>
               <p className="text-xs text-muted-foreground">
                 ≈{" "}
                 {formatCurrency(
@@ -87,31 +88,42 @@ export function ExpenseDashboard({ expenses }: ExpenseDashboardProps) {
           </Card>
         ))}
 
-        <div className="flex justify-end">
-          <DownloadButton expenses={expenses} />
+        {/* Download button - full width on mobile */}
+        <div className="sm:col-span-2 lg:col-span-1 flex justify-center sm:justify-end">
+          <div className="w-full sm:w-auto">
+            <DownloadButton expenses={expenses} />
+          </div>
         </div>
       </div>
 
+      {/* Mobile-optimized tabs */}
       <Tabs defaultValue="categories" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="categories">By Categories</TabsTrigger>
-          <TabsTrigger value="converter">Currency Converter</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="categories" className="text-xs sm:text-sm">
+              Categories
+            </TabsTrigger>
+            <TabsTrigger value="converter" className="text-xs sm:text-sm">
+              Converter
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="categories">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {/* Mobile-optimized category grid */}
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {categoryTotals.map((category) => (
               <Card key={category.id}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     <div className="flex items-center gap-2">
-                      <span>{category.icon}</span>
-                      {category.name}
+                      <span className="text-base">{category.icon}</span>
+                      <span className="truncate">{category.name}</span>
                     </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{formatCurrency(category.total, "USD")}</div>
+                  <div className="text-xl sm:text-2xl font-bold">{formatCurrency(category.total, "USD")}</div>
                   <div className="mt-2 space-y-1">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">{category.percentage.toFixed(1)}% of total</span>
