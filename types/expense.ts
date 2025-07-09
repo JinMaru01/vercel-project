@@ -29,3 +29,12 @@ export interface Currency {
   name: string
   exchangeRate: number
 }
+
+// Add type for balance adjustment
+export interface BalanceAdjustment {
+  walletId: string
+  amount: number
+  type: "add" | "subtract"
+  reason: string
+  timestamp: Date
+}
