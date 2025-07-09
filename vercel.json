@@ -12,8 +12,8 @@
       "dest": "/"
     }
   ],
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
+  "installCommand": "yarn install",
+  "buildCommand": "yarn build",
+  "devCommand": "yarn dev",
   "framework": "nextjs"
 }

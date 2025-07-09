@@ -1,0 +1,4 @@
+# Exclude lock-files that would force Vercel to use npm or pnpm
+package-lock.json
+pnpm-lock.yaml
+.pnpm-store/

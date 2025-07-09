@@ -1,63 +1,85 @@
-# Deployment Troubleshooting Guide
+# Deployment Guide - Yarn Configuration
 
-## Current Issue: pnpm install error
+## Package Manager: Yarn
 
-The error occurs because Vercel is trying to use pnpm instead of npm.
+This project is configured to use Yarn for consistent dependency management.
 
-### Solution Steps:
+### Local Development Setup:
 
-1. **Run the preparation script:**
+1. **Install Yarn (if not already installed):**
    \`\`\`bash
-   npm run prepare-deploy
+   npm install -g yarn
    \`\`\`
 
-2. **Commit and push changes:**
+2. **Install dependencies:**
+   \`\`\`bash
+   yarn install
+   \`\`\`
+
+3. **Run development server:**
+   \`\`\`bash
+   yarn dev
+   \`\`\`
+
+### Deployment Steps:
+
+1. **Prepare for deployment:**
+   \`\`\`bash
+   yarn prepare-deploy
+   \`\`\`
+
+2. **Test build locally:**
+   \`\`\`bash
+   yarn test-build
+   \`\`\`
+
+3. **Commit and push:**
    \`\`\`bash
    git add .
-   git commit -m "Fix package manager configuration for Vercel"
+   git commit -m "Configure project for Yarn deployment"
    git push
    \`\`\`
 
-3. **Alternative: Manual Vercel CLI deployment:**
+### Vercel Configuration:
+
+The project includes:
+- `vercel.json` - Specifies `yarn install` and `yarn build`
+- `package.json` - Sets `packageManager: "yarn@1.22.19"`
+- `.vercelignore` - Excludes npm/pnpm lock files
+- `.gitignore` - Only tracks `yarn.lock`
+
+### Available Scripts:
+
+- `yarn dev` - Start development server
+- `yarn build` - Build for production
+- `yarn start` - Start production server
+- `yarn lint` - Run ESLint
+- `yarn type-check` - Run TypeScript checks
+- `yarn test-build` - Test build locally
+- `yarn prepare-deploy` - Prepare for deployment
+
+### Troubleshooting:
+
+If deployment fails:
+
+1. **Ensure only yarn.lock exists:**
    \`\`\`bash
-   npm install -g vercel
-   vercel --prod
+   rm -f package-lock.json pnpm-lock.yaml
+   yarn install
    \`\`\`
 
-### Files that fix the issue:
-
-- \`.npmrc\` - Forces npm usage
-- \`vercel.json\` - Explicitly sets install command
-- \`package.json\` - Specifies packageManager
-- \`.gitignore\` - Excludes conflicting lock files
-
-### If still failing:
-
-1. **Clear Vercel cache:**
+2. **Clear Vercel cache:**
    - Go to Vercel dashboard
-   - Project Settings → Functions
-   - Clear deployment cache
-
-2. **Check for conflicting files:**
-   - Ensure no \`pnpm-lock.yaml\` in repository
-   - Ensure no \`yarn.lock\` in repository
-   - Only \`package-lock.json\` should exist
+   - Redeploy without cache
 
 3. **Manual deployment:**
    \`\`\`bash
-   vercel --prod --force
+   yarn global add vercel
+   vercel --prod
    \`\`\`
 
-### Environment Variables:
+### File Structure:
 
-Make sure these are set in Vercel dashboard if needed:
-- \`NODE_ENV=production\`
-- Any custom API keys or database URLs
-
-### Build Command Override:
-
-If automatic detection fails, set in Vercel dashboard:
-- **Install Command:** \`npm install\`
-- **Build Command:** \`npm run build\`
-- **Output Directory:** \`.next\`
-\`\`\`
+- `yarn.lock` ✅ (tracked)
+- `package-lock.json` ❌ (ignored)
+- `pnpm-lock.yaml` ❌ (ignored)

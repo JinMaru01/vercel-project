@@ -1,6 +1,6 @@
 const { execSync } = require("child_process")
 
-console.log("🔍 Testing local build...")
+console.log("🔍 Testing local build with Yarn...")
 
 try {
   // Clean previous builds
@@ -8,16 +8,16 @@ try {
   execSync("rm -rf .next", { stdio: "inherit" })
 
   // Install dependencies
-  console.log("📦 Installing dependencies...")
-  execSync("npm install", { stdio: "inherit" })
+  console.log("📦 Installing dependencies with Yarn...")
+  execSync("yarn install", { stdio: "inherit" })
 
   // Type check
   console.log("🔍 Type checking...")
-  execSync("npm run type-check", { stdio: "inherit" })
+  execSync("yarn type-check", { stdio: "inherit" })
 
   // Build
   console.log("🏗️ Building application...")
-  execSync("npm run build", { stdio: "inherit" })
+  execSync("yarn build", { stdio: "inherit" })
 
   console.log("✅ Build successful! Ready for deployment.")
 } catch (error) {

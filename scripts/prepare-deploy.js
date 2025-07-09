@@ -1,10 +1,10 @@
 const fs = require("fs")
 const path = require("path")
 
-console.log("🚀 Preparing for deployment...")
+console.log("🚀 Preparing for Yarn deployment...")
 
 // Remove conflicting lock files
-const lockFiles = ["yarn.lock", "pnpm-lock.yaml"]
+const lockFiles = ["package-lock.json", "pnpm-lock.yaml"]
 
 lockFiles.forEach((file) => {
   const filePath = path.join(process.cwd(), file)
@@ -14,12 +14,17 @@ lockFiles.forEach((file) => {
   }
 })
 
-// Ensure package-lock.json exists
-const packageLockPath = path.join(process.cwd(), "package-lock.json")
-if (!fs.existsSync(packageLockPath)) {
-  console.log("📦 Generating package-lock.json...")
+// Ensure yarn.lock exists
+const yarnLockPath = path.join(process.cwd(), "yarn.lock")
+if (!fs.existsSync(yarnLockPath)) {
+  console.log("📦 Generating yarn.lock...")
   const { execSync } = require("child_process")
-  execSync("npm install --package-lock-only", { stdio: "inherit" })
+  try {
+    execSync("yarn install --frozen-lockfile", { stdio: "inherit" })
+  } catch (error) {
+    console.log("📦 Running yarn install to generate lock file...")
+    execSync("yarn install", { stdio: "inherit" })
+  }
 }
 
 // Check for .npmrc
@@ -28,17 +33,15 @@ if (!fs.existsSync(npmrcPath)) {
   console.log("⚙️  Creating .npmrc...")
   fs.writeFileSync(
     npmrcPath,
-    `# Force npm as package manager
-package-manager=npm
+    `# Yarn configuration
+package-manager=yarn
 enable-pnpm=false
-save-exact=false
-package-lock=true
 `,
   )
 }
 
-console.log("✅ Deployment preparation complete!")
+console.log("✅ Yarn deployment preparation complete!")
 console.log("📝 Next steps:")
 console.log("   1. git add .")
-console.log("   2. git commit -m 'Fix package manager configuration'")
+console.log("   2. git commit -m 'Configure project for Yarn deployment'")
 console.log("   3. git push")
