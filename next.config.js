@@ -1,49 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Ensure static export is disabled for API routes
-  output: undefined,
+  // Remove standalone output as it can cause issues with Vercel
+  // Vercel handles this automatically
 
-  // Enable experimental features if needed
   experimental: {
-    // Enable if using server actions
+    // Enable server actions if needed
     serverActions: true,
   },
 
-  // Ensure proper TypeScript configuration
+  // Don't fail build on type/lint errors during development
   typescript: {
-    // Don't fail build on TypeScript errors during development
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: process.env.NODE_ENV === "development",
   },
 
-  // ESLint configuration
   eslint: {
-    // Don't fail build on ESLint errors during development
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: process.env.NODE_ENV === "development",
   },
 
-  // Ensure proper handling of API routes
-  async rewrites() {
-    return []
-  },
-
-  // Headers configuration
-  async headers() {
-    return [
-      {
-        source: "/api/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache, no-store, must-revalidate",
-          },
-        ],
-      },
-    ]
-  },
-
-  // Images configuration
+  // Basic image optimization
   images: {
-    unoptimized: true,
+    unoptimized: false,
   },
 }
 
